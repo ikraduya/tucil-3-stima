@@ -1,4 +1,5 @@
 import queue 
+import matplotlib.pyplot as plt
 
 class Koor:
   # Attributes: int x, int y
@@ -154,9 +155,28 @@ def BFS(maze):
   pathLog.reverse()
   return pathLog
 
+def showMaze(maze, solution=[]):
+  maze_int = []
+  for i in range(y_size):
+    row = []
+    for j in range(x_size):
+      if Koor(j, i) in solution:
+        row.append(6)
+      elif maze[i][j] == '1':
+        row.append(1)
+      elif maze[i][j] == '0':
+        row.append(4)
+    maze_int.append(row)
+  
+  plt.pcolormesh(maze_int)
+  plt.axes().set_aspect('equal') #set the x and y axes to the same scale
+  plt.xticks([]) # remove the tick marks by setting to an empty list
+  plt.yticks([]) # remove the tick marks by setting to an empty list
+  plt.axes().invert_yaxis() #invert the y-axis so the first row of data is at the top
+  plt.show()
 
 def main():
-  inpF = "maze_small.txt"
+  inpF = "maze_large.txt"
   maze = readFileEksternal(inpF)
 
   print("Pilih metode penelusuran:")
@@ -166,6 +186,7 @@ def main():
   if (cmd == 1):
     pathSolusi = BFS(maze)
     print(pathSolusi)
+    showMaze(maze, pathSolusi)
 
   elif (cmd == 2):
     pass

@@ -155,6 +155,30 @@ def BFS(maze):
   pathLog.reverse()
   return pathLog
 
+Jarak = dict()
+
+def getJarak(start, finish):
+  #start koor current, finish finish node
+  return sqrt((start.x - finish.x)**2 + (start.y - finish.y)**2)
+
+def isiDictJarak(maze, finishPos):
+  for i in range(x_size):
+    for j in range(y_size):
+      if (maze[curr.y][curr.x] == '0'):
+        Jarak[curr] = getJarak(curr,finishPos)
+
+def ABintang(maze):
+  global x_size, y_size
+
+  x_size, y_size = getMazeSize(maze)
+  startPos, finishPos = getGatesPos(maze)
+
+  isiDictJarak(maze,finishPos)
+
+  
+
+
+
 def showMaze(maze, solution=[]):
   maze_int = []
   for i in range(y_size):

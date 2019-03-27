@@ -28,11 +28,11 @@ def main():
   print("Pilih metode penelusuran:")
   print("1. BFS")
   print("2. A*")
-  cmd = input("Pilihan: ")
+  cmd = int(input("Pilihan: "))
   if (cmd == 1):
-
+    pass
   elif (cmd == 2):
-
+    pass
   else:
     print("Pilihan yang anda masukkan salah")
 

@@ -1,5 +1,7 @@
 import queue 
 import matplotlib.pyplot as plt
+import heapq
+import math
 
 class Koor:
   # Attributes: int x, int y
@@ -155,28 +157,71 @@ def BFS(maze):
   pathLog.reverse()
   return pathLog
 
+'''
 Jarak = dict()
-
-def getJarak(start, finish):
-  #start koor current, finish finish node
-  return sqrt((start.x - finish.x)**2 + (start.y - finish.y)**2)
 
 def isiDictJarak(maze, finishPos):
   for i in range(x_size):
     for j in range(y_size):
       if (maze[curr.y][curr.x] == '0'):
         Jarak[curr] = getJarak(curr,finishPos)
+'''
+def getJarak(start, finish):
+  #start koor current, finish finish node
+  #euclidean
+  return math.sqrt((start.x - finish.x)**2 + (start.y - finish.y)**2)
 
 def ABintang(maze):
+ 
   global x_size, y_size
 
   x_size, y_size = getMazeSize(maze)
   startPos, finishPos = getGatesPos(maze)
-
-  isiDictJarak(maze,finishPos)
-
+  # isiDictJarak(maze,finishPos)
+ 
+  AHeap = []
+  heapq.heapify(AHeap)
   
+  #Mulai Penelusuran
+  heapq.heappush(AHeap,(getJarak(startPos,finishPos),startPos))
 
+  while(AHeap):
+    currKoor = heapq.heappop(AHeap)
+
+    if currKoor == finishPos: # Jika mencapai finish
+      break
+    visited.add(currKoor)
+
+    if leftPossible(maze, currKoor):
+      left = currKoor.getLeft()
+      tree.add(left, currKoor)
+      heapq.heappush(AHeap,(getJarak(left,finishPos),currKoor))
+    if rightPossible(maze, currKoor):
+      right = currKoor.getRight()
+      tree.add(right, currKoor)
+      heapq.heappush(AHeap,(getJarak(right,finishPos),currKoor))
+    if upPossible(maze, currKoor):
+      up = currKoor.getUp()
+      tree.add(up, currKoor)
+      heapq.heappush(AHeap,(getJarak(up,finishPos),currKoor))
+    if downPossible(maze, currKoor):
+      down = currKoor.getDown()
+      tree.add(down, currKoor)
+      heapq.heappush(AHeap,(getJarak(down,finishPos),currKoor))
+
+  if currKoor != finishPos:
+    return []
+
+  pathLog = []    
+  ptKoor = currKoor
+  pathLog.append(ptKoor)
+  # tree.printTree()
+  while (ptKoor != startPos):
+    ptKoor = tree.getNodeParent(ptKoor)
+    pathLog.append(ptKoor)
+
+  pathLog.reverse()
+  return pathLog
 
 
 def showMaze(maze, solution=[]):
@@ -213,7 +258,9 @@ def main():
     showMaze(maze, pathSolusi)
 
   elif (cmd == 2):
-    pass
+    pathSolusi = ABintang(maze)
+    print(pathSolusi)
+    showMaze(maze, pathSolusi)
   else:
     print("Pilihan yang anda masukkan salah")
 

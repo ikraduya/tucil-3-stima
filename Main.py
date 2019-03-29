@@ -166,10 +166,12 @@ def isiDictJarak(maze, finishPos):
       if (maze[curr.y][curr.x] == '0'):
         Jarak[curr] = getJarak(curr,finishPos)
 '''
-def getJarak(start, finish):
+def getJarak(start, curr, finish):
   #start koor current, finish finish node
   #euclidean
-  return math.sqrt((start.x - finish.x)**2 + (start.y - finish.y)**2)
+  toStart = math.sqrt((start.x - curr.x)**2 + (start.y - curr.y)**2)
+  toFinish = math.sqrt((curr.x - finish.x)**2 + (curr.y - finish.y)**2)
+  return toStart + toFinish
 
 def ABintang(maze):
  
@@ -183,7 +185,7 @@ def ABintang(maze):
   heapq.heapify(AHeap)
   
   #Mulai Penelusuran
-  heapq.heappush(AHeap,(getJarak(startPos,finishPos),startPos))
+  heapq.heappush(AHeap,(getJarak(startPos,startPos,finishPos),startPos))
 
   while(AHeap):
     tupleTemp = heapq.heappop(AHeap)
@@ -196,19 +198,19 @@ def ABintang(maze):
     if leftPossible(maze, currKoor):
       left = currKoor.getLeft()
       tree.add(left, currKoor)
-      heapq.heappush(AHeap,(getJarak(left,finishPos),left))
+      heapq.heappush(AHeap,(getJarak(startPos,left,finishPos),left))
     if rightPossible(maze, currKoor):
       right = currKoor.getRight()
       tree.add(right, currKoor)
-      heapq.heappush(AHeap,(getJarak(right,finishPos),right))
+      heapq.heappush(AHeap,(getJarak(startPos,right,finishPos),right))
     if upPossible(maze, currKoor):
       up = currKoor.getUp()
       tree.add(up, currKoor)
-      heapq.heappush(AHeap,(getJarak(up,finishPos),up))
+      heapq.heappush(AHeap,(getJarak(startPos,up,finishPos),up))
     if downPossible(maze, currKoor):
       down = currKoor.getDown()
       tree.add(down, currKoor)
-      heapq.heappush(AHeap,(getJarak(down,finishPos),down))
+      heapq.heappush(AHeap,(getJarak(startPos,down,finishPos),down))
 
   if currKoor != finishPos:
     return []
@@ -246,7 +248,7 @@ def showMaze(maze, solution=[]):
   plt.show()
 
 def main():
-  inpF = "maze_large.txt"
+  inpF = "maze_xlarge.txt"
   maze = readFileEksternal(inpF)
 
   print("Pilih metode penelusuran:")

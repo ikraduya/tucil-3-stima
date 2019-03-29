@@ -176,6 +176,8 @@ def getJarak(start, curr, finish):
 def ABintang(maze):
  
   global x_size, y_size
+  #buat ID
+  i = 0
 
   x_size, y_size = getMazeSize(maze)
   startPos, finishPos = getGatesPos(maze)
@@ -185,11 +187,13 @@ def ABintang(maze):
   heapq.heapify(AHeap)
   
   #Mulai Penelusuran
-  heapq.heappush(AHeap,(getJarak(startPos,startPos,finishPos),startPos))
+  #heapq.heappsuh(AHeap,(getJarak(startPos,curr,finishPos),i,curr))
+  heapq.heappush(AHeap,(getJarak(startPos,startPos,finishPos),i,startPos))
+  i += 1
 
   while(AHeap):
     tupleTemp = heapq.heappop(AHeap)
-    currKoor = tupleTemp[1]
+    currKoor = tupleTemp[2]
 
     if currKoor == finishPos: # Jika mencapai finish
       break
@@ -198,19 +202,23 @@ def ABintang(maze):
     if leftPossible(maze, currKoor):
       left = currKoor.getLeft()
       tree.add(left, currKoor)
-      heapq.heappush(AHeap,(getJarak(startPos,left,finishPos),left))
+      heapq.heappush(AHeap,(getJarak(startPos,left,finishPos),i,left))
+      i += 1
     if rightPossible(maze, currKoor):
       right = currKoor.getRight()
       tree.add(right, currKoor)
-      heapq.heappush(AHeap,(getJarak(startPos,right,finishPos),right))
+      heapq.heappush(AHeap,(getJarak(startPos,right,finishPos),i,right))
+      i += 1
     if upPossible(maze, currKoor):
       up = currKoor.getUp()
       tree.add(up, currKoor)
-      heapq.heappush(AHeap,(getJarak(startPos,up,finishPos),up))
+      heapq.heappush(AHeap,(getJarak(startPos,up,finishPos),i,up))
+      i += 1
     if downPossible(maze, currKoor):
       down = currKoor.getDown()
       tree.add(down, currKoor)
-      heapq.heappush(AHeap,(getJarak(startPos,down,finishPos),down))
+      heapq.heappush(AHeap,(getJarak(startPos,down,finishPos),i,down))
+      i += 1
 
   if currKoor != finishPos:
     return []
@@ -248,7 +256,7 @@ def showMaze(maze, solution=[]):
   plt.show()
 
 def main():
-  inpF = "maze_xlarge.txt"
+  inpF = "maze_med.txt"
   maze = readFileEksternal(inpF)
 
   print("Pilih metode penelusuran:")

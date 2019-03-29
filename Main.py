@@ -186,7 +186,8 @@ def ABintang(maze):
   heapq.heappush(AHeap,(getJarak(startPos,finishPos),startPos))
 
   while(AHeap):
-    currKoor = heapq.heappop(AHeap)
+    tupleTemp = heapq.heappop(AHeap)
+    currKoor = tupleTemp[1]
 
     if currKoor == finishPos: # Jika mencapai finish
       break
@@ -195,19 +196,19 @@ def ABintang(maze):
     if leftPossible(maze, currKoor):
       left = currKoor.getLeft()
       tree.add(left, currKoor)
-      heapq.heappush(AHeap,(getJarak(left,finishPos),currKoor))
+      heapq.heappush(AHeap,(getJarak(left,finishPos),left))
     if rightPossible(maze, currKoor):
       right = currKoor.getRight()
       tree.add(right, currKoor)
-      heapq.heappush(AHeap,(getJarak(right,finishPos),currKoor))
+      heapq.heappush(AHeap,(getJarak(right,finishPos),right))
     if upPossible(maze, currKoor):
       up = currKoor.getUp()
       tree.add(up, currKoor)
-      heapq.heappush(AHeap,(getJarak(up,finishPos),currKoor))
+      heapq.heappush(AHeap,(getJarak(up,finishPos),up))
     if downPossible(maze, currKoor):
       down = currKoor.getDown()
       tree.add(down, currKoor)
-      heapq.heappush(AHeap,(getJarak(down,finishPos),currKoor))
+      heapq.heappush(AHeap,(getJarak(down,finishPos),down))
 
   if currKoor != finishPos:
     return []

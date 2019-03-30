@@ -166,18 +166,18 @@ def isiDictJarak(maze, finishPos):
       if (maze[curr.y][curr.x] == '0'):
         Jarak[curr] = getJarak(curr,finishPos)
 '''
-def getJarak(start, curr, finish):
+def getJarak(realCurrJarak, curr, finish):
   #start koor current, finish finish node
   #euclidean
-  toStart = math.sqrt((start.x - curr.x)**2 + (start.y - curr.y)**2)
   toFinish = math.sqrt((curr.x - finish.x)**2 + (curr.y - finish.y)**2)
-  return toStart + toFinish
+  return realCurrJarak + toFinish
 
 def ABintang(maze):
  
   global x_size, y_size
   #buat ID
   i = 0
+  realCurrJarak = 0
 
   x_size, y_size = getMazeSize(maze)
   startPos, finishPos = getGatesPos(maze)
@@ -188,8 +188,9 @@ def ABintang(maze):
   
   #Mulai Penelusuran
   #heapq.heappsuh(AHeap,(getJarak(startPos,curr,finishPos),i,curr))
-  heapq.heappush(AHeap,(getJarak(startPos,startPos,finishPos),i,startPos))
+  heapq.heappush(AHeap,(getJarak(realCurrJarak,startPos,finishPos),i,startPos))
   i += 1
+  realCurrJarak += 1
 
   while(AHeap):
     tupleTemp = heapq.heappop(AHeap)
@@ -202,23 +203,25 @@ def ABintang(maze):
     if leftPossible(maze, currKoor):
       left = currKoor.getLeft()
       tree.add(left, currKoor)
-      heapq.heappush(AHeap,(getJarak(startPos,left,finishPos),i,left))
+      heapq.heappush(AHeap,(getJarak(realCurrJarak,left,finishPos),i,left))
       i += 1
     if rightPossible(maze, currKoor):
       right = currKoor.getRight()
       tree.add(right, currKoor)
-      heapq.heappush(AHeap,(getJarak(startPos,right,finishPos),i,right))
+      heapq.heappush(AHeap,(getJarak(realCurrJarak,right,finishPos),i,right))
       i += 1
     if upPossible(maze, currKoor):
       up = currKoor.getUp()
       tree.add(up, currKoor)
-      heapq.heappush(AHeap,(getJarak(startPos,up,finishPos),i,up))
+      heapq.heappush(AHeap,(getJarak(realCurrJarak,up,finishPos),i,up))
       i += 1
     if downPossible(maze, currKoor):
       down = currKoor.getDown()
       tree.add(down, currKoor)
-      heapq.heappush(AHeap,(getJarak(startPos,down,finishPos),i,down))
+      heapq.heappush(AHeap,(getJarak(realCurrJarak,down,finishPos),i,down))
       i += 1
+
+    realCurrJarak += 1
 
   if currKoor != finishPos:
     return []
@@ -256,7 +259,7 @@ def showMaze(maze, solution=[]):
   plt.show()
 
 def main():
-  inpF = "maze_med.txt"
+  inpF = "maze_xlarge.txt"
   maze = readFileEksternal(inpF)
 
   print("Pilih metode penelusuran:")

@@ -197,7 +197,12 @@ def ABintang(maze):
     currKoor = tupleTemp[2]
 
     if currKoor == finishPos: # Jika mencapai finish
-      break
+      if (AHeap):
+        tupleAnotherTemp = heapq.heappop(AHeap)
+        if tupleAnotherTemp[0] < tupleTemp[0]:
+          currKoor = tupleAnotherTemp[2]
+        else:
+          break
     visited.add(currKoor)
 
     if leftPossible(maze, currKoor):
@@ -259,7 +264,7 @@ def showMaze(maze, solution=[]):
   plt.show()
 
 def main():
-  inpF = "maze_xlarge.txt"
+  inpF = "maze_small.txt"
   maze = readFileEksternal(inpF)
 
   print("Pilih metode penelusuran:")

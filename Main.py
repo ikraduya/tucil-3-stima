@@ -264,7 +264,7 @@ def showMaze(maze, solution=[]):
   plt.show()
 
 def main():
-  inpF = "maze_small.txt"
+  inpF = "maze_large.txt"
   maze = readFileEksternal(inpF)
 
   print("Pilih metode penelusuran:")

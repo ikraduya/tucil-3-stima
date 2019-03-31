@@ -50,7 +50,6 @@ class Tree:
     return self.data[child_node]
 
   def printTree(self):
-    print("isi tree =")
     for c, p in self.data.items():
       print(c, ":", p)
 
@@ -68,14 +67,14 @@ def getMazeSize(maze):
   return (x_size, y_size)
 
 def getGatesPos(maze):
-# Asumsi: start berada di tembok kiri, finish di tembok kanan
+  # Asumsi: start berada di tembok kiri, finish di tembok kanan
   startPos = Koor()
   finishPos = Koor()
 
   for i in range(y_size):
     # Periksa start
     if (maze[i][0] == '0'):
-      startPos.set(0, 1)
+      startPos.set(0, i)
     
     # Periksa finish
     if (maze[i][x_size-1] == '0'):
@@ -149,7 +148,6 @@ def BFS(maze):
   pathLog = []    
   ptKoor = currKoor
   pathLog.append(ptKoor)
-  # tree.printTree()
   while (ptKoor != startPos):
     ptKoor = tree.getNodeParent(ptKoor)
     pathLog.append(ptKoor)
@@ -157,47 +155,41 @@ def BFS(maze):
   pathLog.reverse()
   return pathLog
 
-'''
-Jarak = dict()
-
-def isiDictJarak(maze, finishPos):
-  for i in range(x_size):
-    for j in range(y_size):
-      if (maze[curr.y][curr.x] == '0'):
-        Jarak[curr] = getJarak(curr,finishPos)
-'''
 def getJarak(realCurrJarak, curr, finish):
-  #start koor current, finish finish node
-  #euclidean
-  toFinish = math.sqrt((curr.x - finish.x)**2 + (curr.y - finish.y)**2)
+  # start koor current, finish finish node
+  # euclidean
+  toFinish = abs(curr.x - finish.x) + abs(curr.y - finish.y)
   return realCurrJarak + toFinish
 
 def ABintang(maze):
  
   global x_size, y_size
-  #buat ID
+  # buat ID
   i = 0
   realCurrJarak = 0
 
   x_size, y_size = getMazeSize(maze)
   startPos, finishPos = getGatesPos(maze)
-  # isiDictJarak(maze,finishPos)
  
   AHeap = []
   heapq.heapify(AHeap)
+  costMatrix = [[0 for j in range(x_size)] for i in range(y_size)]
   
-  #Mulai Penelusuran
-  #heapq.heappsuh(AHeap,(getJarak(startPos,curr,finishPos),i,curr))
+  # Mulai Penelusuran
   heapq.heappush(AHeap,(getJarak(realCurrJarak,startPos,finishPos),i,startPos))
+
   i += 1
   realCurrJarak += 1
 
+  currKoor = Koor()
+
   while(AHeap):
+    befKoor = currKoor
     tupleTemp = heapq.heappop(AHeap)
     currKoor = tupleTemp[2]
 
     if currKoor == finishPos: # Jika mencapai finish
-      if (AHeap):
+      if (len(AHeap) > 0):
         tupleAnotherTemp = heapq.heappop(AHeap)
         if tupleAnotherTemp[0] < tupleTemp[0]:
           currKoor = tupleAnotherTemp[2]
@@ -208,25 +200,27 @@ def ABintang(maze):
     if leftPossible(maze, currKoor):
       left = currKoor.getLeft()
       tree.add(left, currKoor)
-      heapq.heappush(AHeap,(getJarak(realCurrJarak,left,finishPos),i,left))
+      costMatrix[left.y][left.x] = costMatrix[currKoor.y][currKoor.x] + 1
+      heapq.heappush(AHeap,(getJarak(costMatrix[left.y][left.x],left,finishPos),i,left))
       i += 1
     if rightPossible(maze, currKoor):
       right = currKoor.getRight()
       tree.add(right, currKoor)
-      heapq.heappush(AHeap,(getJarak(realCurrJarak,right,finishPos),i,right))
+      costMatrix[right.y][right.x] = costMatrix[currKoor.y][currKoor.x] + 1
+      heapq.heappush(AHeap,(getJarak(costMatrix[right.y][right.x],right,finishPos),i,right))
       i += 1
     if upPossible(maze, currKoor):
       up = currKoor.getUp()
       tree.add(up, currKoor)
-      heapq.heappush(AHeap,(getJarak(realCurrJarak,up,finishPos),i,up))
+      costMatrix[up.y][up.x] = costMatrix[currKoor.y][currKoor.x] + 1
+      heapq.heappush(AHeap,(getJarak(costMatrix[up.y][up.x],up,finishPos),i,up))
       i += 1
     if downPossible(maze, currKoor):
       down = currKoor.getDown()
       tree.add(down, currKoor)
-      heapq.heappush(AHeap,(getJarak(realCurrJarak,down,finishPos),i,down))
+      costMatrix[down.y][down.x] = costMatrix[currKoor.y][currKoor.x] + 1
+      heapq.heappush(AHeap,(getJarak(costMatrix[down.y][down.x],down,finishPos),i,down))
       i += 1
-
-    realCurrJarak += 1
 
   if currKoor != finishPos:
     return []
@@ -234,7 +228,6 @@ def ABintang(maze):
   pathLog = []    
   ptKoor = currKoor
   pathLog.append(ptKoor)
-  # tree.printTree()
   while (ptKoor != startPos):
     ptKoor = tree.getNodeParent(ptKoor)
     pathLog.append(ptKoor)
@@ -264,7 +257,7 @@ def showMaze(maze, solution=[]):
   plt.show()
 
 def main():
-  inpF = "maze_large.txt"
+  inpF = "maze_lain.txt"
   maze = readFileEksternal(inpF)
 
   print("Pilih metode penelusuran:")
@@ -273,12 +266,10 @@ def main():
   cmd = int(input("Pilihan: "))
   if (cmd == 1):
     pathSolusi = BFS(maze)
-    print(pathSolusi)
     showMaze(maze, pathSolusi)
 
   elif (cmd == 2):
     pathSolusi = ABintang(maze)
-    print(pathSolusi)
     showMaze(maze, pathSolusi)
   else:
     print("Pilihan yang anda masukkan salah")
